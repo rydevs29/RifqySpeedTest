@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RifqySpeedTest // Modern UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- MODERN CSS RESET & BASE --- */
+        :root {
+            --bg-color: #050505;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent-blue: #3b82f6; /* Neon Blue */
+            --accent-cyan: #06b6d4; /* Neon Cyan */
+            --accent-purple: #8b5cf6; /* Neon Purple */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            /* Latar belakang grid halus futuristic */
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+        }
+
+        /* --- UI COMPONENTS --- */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            z-index: 1;
+        }
+
+        /* Logo Modern Minimalis */
+        .logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: -1px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+        .logo span {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Main Display Area (Angka Besar) */
+        .hero-display {
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .main-val-wrapper {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Angka Raksasa dengan Gradient */
+        .main-val {
+            font-size: clamp(80px, 15vw, 120px); /* Responsif super besar */
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(to bottom right, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        /* Efek Glow saat aktif */
+        .main-val.active-dl {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-cyan));
+            -webkit-background-clip: text;
+            text-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+        }
+        .main-val.active-ul {
+            background: linear-gradient(to right, var(--accent-purple), var(--accent-blue));
+            -webkit-background-clip: text;
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .main-unit {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .status-text {
+            margin-top: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            min-height: 20px;
+        }
+
+        /* Tombol Start Modern */
+        .btn-start {
+            padding: 18px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--bg-color);
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-cyan));
+            border: none;
+            border-radius: 4px; /* Sudut tajam modern */
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-start:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+        }
+
+        .btn-start:disabled {
+            background: #333;
+            color: #666;
+            box-shadow: none;
+            cursor: wait;
+        }
+
+        /* Results Grid (Glassmorphism Cards) */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px); /* Efek Kaca Buram */
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 10px;
+            border-radius: 12px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        
+        .result-card:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .card-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .card-val {
+            font-size: 22px;
+            font-weight: 900;
+            display: block;
+        }
+        .card-unit {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Warna aksen untuk hasil akhir */
+        #pingVal { color: var(--text-primary); }
+        #dlVal { color: var(--accent-cyan); }
+        #ulVal { color: var(--accent-purple); }
+
+        /* Responsif untuk HP */
+        @media (max-width: 500px) {
+            .results-grid {
+                gap: 10px;
+            }
+            .card-val { font-size: 18px; }
+            .main-unit { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">
+            <span>Rifqy</span>SpeedTest
+        </div>
+
+        <div class="hero-display">
+            <div class="main-val-wrapper">
+                <div class="main-val" id="mainDisplay">READY</div>
+                <div class="main-unit" id="mainUnit"></div>
+            </div>
+            <div class="status-text" id="status">Tekan tombol untuk mulai</div>
+        </div>
+
+        <button class="btn-start" id="startBtn" onclick="runTest()">Start Test</button>
+
+        <div class="results-grid">
+            <div class="result-card">
+                <div class="card-label">Ping</div>
+                <span class="card-val" id="pingVal">- <span class="card-unit">ms</span></span>
+            </div>
+            <div class="result-card">
+                <div class="card-label">Download</div>
+                <span class="card-val" id="dlVal">- <span class="card-unit">Mbps</span></span>
+            </div>
+            <div class="result-card">
+                <div class="card-label">Upload</div>
+                <span class="card-val" id="ulVal">- <span class="card-unit">Mbps</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi helper untuk animasi angka random saat loading
+        let animationInterval;
+        function startNumberAnimation(elementId) {
+            const el = document.getElementById(elementId);
+            clearInterval(animationInterval);
+            animationInterval = setInterval(() => {
+                el.innerText = (Math.random() * 100).toFixed(1);
+            }, 50);
+        }
+        function stopNumberAnimation() {
+            clearInterval(animationInterval);
+        }
+
+        async function runTest() {
+            const btn = document.getElementById('startBtn');
+            const mainDisplay = document.getElementById('mainDisplay');
+            const mainUnit = document.getElementById('mainUnit');
+            const status = document.getElementById('status');
+            
+            // Reset UI
+            btn.disabled = true;
+            mainDisplay.classList.remove('active-dl', 'active-ul');
+            document.getElementById('dlVal').innerHTML = '- <span class="card-unit">Mbps</span>';
+            document.getElementById('ulVal').innerHTML = '- <span class="card-unit">Mbps</span>';
+            mainUnit.innerText = "ms";
+            
+            // --- 1. TEST PING ---
+            status.innerText = "Mengukur Latensi...";
+            startNumberAnimation('mainDisplay');
+            
+            const pingStart = performance.now();
+            await fetch('/api/download?ping=true');
+            const pingTime = (performance.now() - pingStart).toFixed(0);
+            
+            stopNumberAnimation();
+            mainDisplay.innerText = pingTime;
+            document.getElementById('pingVal').innerHTML = `${pingTime} <span class="card-unit">ms</span>`;
+            await new Promise(r => setTimeout(r, 500)); // Jeda sebentar
+
+            // --- 2. TEST DOWNLOAD ---
+            status.innerText = "Menguji Download...";
+            mainUnit.innerText = "Mbps";
+            mainDisplay.classList.add('active-dl'); // Aktifkan efek glow biru/cyan
+            startNumberAnimation('mainDisplay');
+            
+            const dlStart = performance.now();
+            const dlResponse = await fetch('/api/download'); 
+            const blob = await dlResponse.blob();
+            const dlDuration = (performance.now() - dlStart) / 1000;
+            
+            const dlSizeBits = blob.size * 8;
+            const dlSpeedMbps = (dlSizeBits / dlDuration / 1000000).toFixed(2);
+            
+            stopNumberAnimation();
+            mainDisplay.innerText = dlSpeedMbps;
+            document.getElementById('dlVal').innerHTML = `${dlSpeedMbps} <span class="card-unit">Mbps</span>`;
+            await new Promise(r => setTimeout(r, 500));
+
+            // --- 3. TEST UPLOAD ---
+            status.innerText = "Menguji Upload...";
+            mainDisplay.classList.remove('active-dl');
+            mainDisplay.classList.add('active-ul'); // Aktifkan efek glow ungu
+            startNumberAnimation('mainDisplay');
+            
+            // Data sampah 2MB
+            const uploadData = new Uint8Array(2 * 1024 * 1024); 
+            
+            const ulStart = performance.now();
+            await fetch('/api/upload', {
+                method: 'POST',
+                body: uploadData
+            });
+            const ulDuration = (performance.now() - ulStart) / 1000;
+            
+            const ulSizeBits = uploadData.length * 8;
+            const ulSpeedMbps = (ulSizeBits / ulDuration / 1000000).toFixed(2);
+
+            stopNumberAnimation();
+            mainDisplay.innerText = ulSpeedMbps;
+            document.getElementById('ulVal').innerHTML = `${ulSpeedMbps} <span class="card-unit">Mbps</span>`;
+            
+            // --- SELESAI ---
+            status.innerText = "Tes Selesai.";
+            mainDisplay.classList.remove('active-ul');
+            mainDisplay.innerText = "DONE";
+            mainUnit.innerText = "";
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
